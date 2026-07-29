@@ -49,6 +49,8 @@ Pak upravte `ADMIN_PASSWORD`, `SECRET_KEY` a podle typu nasazení `COOKIE_SECURE
 docker compose up --build
 ```
 
+Docker publikovaný port je `8443`, kontejner uvnitř dál poslouchá na `8000`.
+
 Perzistentní data:
 
 - `data/` obsahuje SQLite databázi.
