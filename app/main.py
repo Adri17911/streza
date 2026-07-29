@@ -128,12 +128,12 @@ def startup() -> None:
 
 def render(request: Request, template: str, context: dict | None = None) -> HTMLResponse:
     admin = auth.current_admin(request)
-    data = {"request": request, "admin": admin}
+    data = {"admin": admin}
     if admin:
         data["csrf_token"] = auth.create_csrf_token(admin)
     if context:
         data.update(context)
-    return templates.TemplateResponse(template, data)
+    return templates.TemplateResponse(request, template, data)
 
 
 def require_admin(request: Request) -> str | RedirectResponse:
