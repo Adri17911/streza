@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Přihlášení | Streza Admin</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body class="login-body">
     <form class="login-card" action="/admin/login" method="post">
-      <a class="logo" href="/"><img class="logo-image" src="{{ url_for('static', path='img/logo.png') }}" alt="Streza" /></a>
+      <a class="logo" href="/"><img class="logo-image" src="/static/img/logo.png" alt="Streza" /></a>
       <h1>Přihlášení</h1>
       {% if error %}<p class="admin-alert error">{{ error }}</p>{% endif %}
       <label>Uživatelské jméno <input type="text" name="username" autocomplete="username" required /></label>
