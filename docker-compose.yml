@@ -11,7 +11,12 @@ services:
       APP_ENV: ${APP_ENV:-production}
       COOKIE_SECURE: ${COOKIE_SECURE:-true}
     volumes:
-      - ./data:/app/data
-      - ./uploads:/app/uploads
-      - ./private_uploads:/app/private_uploads
+      - streza_data:/app/data
+      - streza_uploads:/app/uploads
+      - streza_private_uploads:/app/private_uploads
     restart: unless-stopped
+
+volumes:
+  streza_data:
+  streza_uploads:
+  streza_private_uploads:
