@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Přehled | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Administrace</p>
+    <h1>Přehled</h1>
+  </div>
+
+  <section class="admin-stats">
+    <article><span>Poptávky</span><strong>{{ lead_count }}</strong></article>
+    <article><span>Novinky</span><strong>{{ news_count }}</strong></article>
+    <article><span>Popup</span><strong>{{ "Zapnutý" if popup.is_enabled else "Vypnutý" }}</strong></article>
+  </section>
+
+  <section class="admin-panel">
+    <div class="panel-heading">
+      <h2>Pipeline poptávek</h2>
+      <a class="admin-action" href="/admin/poptavky">Otevřít poptávky</a>
+    </div>
+    <div class="pipeline">
+      {% for status, label in statuses.items() %}
+        <a class="pipeline-step status-{{ status }}" href="/admin/poptavky?stav={{ status }}">
+          <strong>{{ pipeline.get(status, 0) }}</strong>
+          <span>{{ label }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if overdue %}
+    <section class="admin-panel overdue-panel">
+      <div class="panel-heading">
+        <h2>Prošlé follow-upy</h2>
+      </div>
+      <div class="admin-table">
+        {% for lead in overdue %}
+          <a class="table-row" href="/admin/poptavky/{{ lead.id }}">
+            <span>{{ lead.name }}</span>
+            <span>{{ lead.contact }}</span>
+            <span class="status-pill status-{{ lead.status }}">{{ statuses.get(lead.status, lead.status) }}</span>
+            <span class="overdue-date">{{ lead.follow_up_at|format_dt }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="admin-panel">
+    <div class="panel-heading">
+      <h2>Poslední poptávky</h2>
+      <a class="admin-action" href="/admin/poptavky">Zobrazit všechny</a>
+    </div>
+    {% if leads %}
+      <div class="admin-table">
+        {% for lead in leads %}
+          <a class="table-row" href="/admin/poptavky/{{ lead.id }}">
+            <span>{{ lead.name }}</span>
+            <span>{{ lead.contact }}</span>
+            <span class="status-pill status-{{ lead.status }}">{{ statuses.get(lead.status, lead.status) }}</span>
+            <span>{{ lead.created_at|format_dt }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Zatím nepřišla žádná poptávka.</p>
+    {% endif %}
+  </section>
+{% endblock %}

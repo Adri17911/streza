@@ -1,0 +1,67 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Obrázky | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Obsah</p>
+    <h1>Obrázky na webu</h1>
+  </div>
+
+  {% if request.query_params.get("saved") == "1" %}<p class="admin-alert">Obrázek byl nahrán.</p>{% endif %}
+  {% if request.query_params.get("saved") == "2" %}<p class="admin-alert">Obrázek byl upraven.</p>{% endif %}
+  {% if error %}<p class="admin-alert error">{{ error }}</p>{% endif %}
+
+  <section class="admin-panel">
+    <h2>Nahrát nový obrázek</h2>
+    <form class="admin-form upload-form" action="/admin/obrazky" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>Soubor (JPG, PNG, WEBP, GIF) <input type="file" name="file" accept=".jpg,.jpeg,.png,.webp,.gif" required /></label>
+      <label>Popisek (volitelný) <input type="text" name="title" placeholder="Rekonstrukce střechy, Říčany" /></label>
+      <label>
+        Umístění na webu
+        <select name="slot">
+          {% for key, label in slots.items() %}
+            <option value="{{ key }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <p class="form-hint">
+        U hero vizuálu, Materiálů a Popupu se používá vždy nejnovější obrázek s daným umístěním.
+        Galerie Realizace zobrazuje všechny obrázky s umístěním Galerie.
+      </p>
+      <button class="button primary" type="submit">Nahrát obrázek</button>
+    </form>
+  </section>
+
+  <section class="admin-panel">
+    <h2>Nahrané obrázky</h2>
+    {% if images %}
+      <div class="image-grid">
+        {% for image in images %}
+          <figure class="image-tile">
+            <img src="/uploads/{{ image.filename }}" alt="{{ image.title or image.filename }}" loading="lazy" />
+            <figcaption>
+              <form class="image-edit-form" action="/admin/obrazky/{{ image.id }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+                <input type="text" name="title" value="{{ image.title }}" placeholder="Popisek" />
+                <select name="slot">
+                  {% for key, label in slots.items() %}
+                    <option value="{{ key }}" {% if image.slot == key %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+                <button class="button secondary" type="submit">Uložit</button>
+              </form>
+              <form action="/admin/obrazky/{{ image.id }}/smazat" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+                <button type="submit" class="danger-button">Smazat</button>
+              </form>
+            </figcaption>
+          </figure>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Zatím nejsou nahrané žádné obrázky.</p>
+    {% endif %}
+  </section>
+{% endblock %}

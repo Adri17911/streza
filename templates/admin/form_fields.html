@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Poptávkový formulář | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Formulář</p>
+    <h1>Poptávkový formulář</h1>
+  </div>
+
+  {% if request.query_params.get("saved") %}<p class="admin-alert">Pole bylo uloženo.</p>{% endif %}
+
+  <section class="admin-panel">
+    <h2>Pole formuláře</h2>
+    <p class="empty-state">Pořadí určuje pozici na webu. Neaktivní pole se na webu nezobrazí.</p>
+    <div class="field-list">
+      {% for field in fields %}
+        <form class="admin-form field-editor" action="/admin/formular/{{ field.id }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <label>Popisek <input type="text" name="label" value="{{ field.label }}" required /></label>
+          <label>
+            Typ
+            <select name="field_type">
+              {% for type_option in ["text", "email", "tel", "textarea"] %}
+                <option value="{{ type_option }}" {% if field.field_type == type_option %}selected{% endif %}>{{ type_option }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>Nápověda <input type="text" name="placeholder" value="{{ field.placeholder }}" /></label>
+          <label>Pořadí <input type="number" name="position" value="{{ field.position }}" min="0" /></label>
+          <label class="checkbox-label"><input type="checkbox" name="is_required" {% if field.is_required %}checked{% endif %} /> Povinné</label>
+          <label class="checkbox-label"><input type="checkbox" name="is_active" {% if field.is_active %}checked{% endif %} /> Aktivní</label>
+          <div class="field-actions">
+            <button class="button primary" type="submit">Uložit</button>
+            <button class="danger-button" type="submit" formaction="/admin/formular/{{ field.id }}/smazat">Smazat</button>
+          </div>
+        </form>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="admin-panel">
+    <h2>Přidat nové pole</h2>
+    <form class="admin-form field-editor" action="/admin/formular" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>Popisek <input type="text" name="label" placeholder="Např. Lokalita stavby" required /></label>
+      <label>
+        Typ
+        <select name="field_type">
+          <option value="text">text</option>
+          <option value="email">email</option>
+          <option value="tel">tel</option>
+          <option value="textarea">textarea</option>
+        </select>
+      </label>
+      <label>Nápověda <input type="text" name="placeholder" placeholder="Např. Praha-východ" /></label>
+      <label class="checkbox-label"><input type="checkbox" name="is_required" /> Povinné</label>
+      <div class="field-actions">
+        <button class="button primary" type="submit">Přidat pole</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

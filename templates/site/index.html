@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ s.site_title }}</title>
+    <meta name="description" content="{{ s.meta_description }}" />
+    {% if s.seo_keywords %}<meta name="keywords" content="{{ s.seo_keywords }}" />{% endif %}
+    {% if s.seo_robots %}<meta name="robots" content="{{ s.seo_robots }}" />{% endif %}
+    {% if s.seo_canonical_url %}<link rel="canonical" href="{{ s.seo_canonical_url }}" />{% endif %}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ s.seo_og_title or s.site_title }}" />
+    <meta property="og:description" content="{{ s.seo_og_description or s.meta_description }}" />
+    {% if s.seo_og_image %}<meta property="og:image" content="{{ s.seo_og_image }}" />{% endif %}
+    {% if s.seo_canonical_url %}<meta property="og:url" content="{{ s.seo_canonical_url }}" />{% endif %}
+    <link rel="icon" type="image/png" href="{{ url_for('static', path='img/logo.png') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+    {% if s.ga_measurement_id %}
+      <script async src="https://www.googletagmanager.com/gtag/js?id={{ s.ga_measurement_id }}"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", {{ s.ga_measurement_id|tojson }});
+      </script>
+    {% endif %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "RoofingContractor",
+        "name": {{ s.company_name|tojson }},
+        "description": {{ s.meta_description|tojson }},
+        "telephone": {{ s.contact_phone|replace(' ', '')|tojson }},
+        "email": {{ s.contact_email|tojson }},
+        "address": { "@type": "PostalAddress", "streetAddress": {{ s.company_address|tojson }} },
+        "areaServed": {{ s.nav_location|tojson }}
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <nav class="nav" aria-label="Hlavní navigace">
+        <a class="logo" href="#top" aria-label="{{ s.brand_name }} domů">
+          <img class="logo-image" src="{{ url_for('static', path='img/logo.png') }}" alt="{{ s.brand_name }}" />
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+        <div class="nav-links" id="menu">
+          <a href="#sluzby">Služby</a>
+          <a href="#proces">Postup</a>
+          {% if images %}<a href="#realizace">Realizace</a>{% endif %}
+          <a href="#novinky">Novinky</a>
+          <a href="#kontakt">Kontakt</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">{{ s.hero_eyebrow }}</p>
+          <h1>{{ s.hero_title }}</h1>
+          <p class="hero-text">{{ s.hero_text }}</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#kontakt">{{ s.hero_primary_cta }}</a>
+            <a class="button secondary" href="#sluzby">{{ s.hero_secondary_cta }}</a>
+          </div>
+          <div class="stats" aria-label="Základní údaje">
+            <div><strong>{{ s.stat_1_value }}</strong><span>{{ s.stat_1_label }}</span></div>
+            <div><strong>{{ s.stat_2_value }}</strong><span>{{ s.stat_2_label }}</span></div>
+            <div><strong>{{ s.stat_3_value }}</strong><span>{{ s.stat_3_label }}</span></div>
+          </div>
+        </div>
+        <div class="hero-visual reveal" {% if not hero_image %}aria-hidden="true"{% endif %}>
+          {% if hero_image %}
+            <figure class="hero-photo">
+              <img src="/uploads/{{ hero_image.filename }}" alt="{{ hero_image.title or 'Realizace střechy' }}" />
+              {% if hero_image.title %}<figcaption>{{ hero_image.title }}</figcaption>{% endif %}
+            </figure>
+          {% else %}
+            <div class="sun"></div>
+            <div class="roof-card">
+              <div class="roof"><div class="roof-left"></div><div class="roof-right"></div></div>
+              <div class="house"><div class="window"></div><div class="door"></div><div class="window small"></div></div>
+              <div class="spark spark-one"></div><div class="spark spark-two"></div><div class="spark spark-three"></div>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="section services" id="sluzby">
+        <div class="section-heading reveal">
+          <p class="eyebrow">{{ s.services_eyebrow }}</p>
+          <h2>{{ s.services_title }}</h2>
+        </div>
+        <div class="cards">
+          {% for number in range(1, 5) %}
+            <article class="card reveal">
+              <span class="card-icon">0{{ number }}</span>
+              <h3>{{ s["service_" ~ number ~ "_title"] }}</h3>
+              <p>{{ s["service_" ~ number ~ "_text"] }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="section process" id="proces">
+        <div class="section-heading reveal">
+          <p class="eyebrow">{{ s.process_eyebrow }}</p>
+          <h2>{{ s.process_title }}</h2>
+        </div>
+        <div class="timeline">
+          {% for number in range(1, 5) %}
+            <div class="timeline-item reveal">
+              <span>{{ number }}</span>
+              <div>
+                <h3>{{ s["process_" ~ number ~ "_title"] }}</h3>
+                <p>{{ s["process_" ~ number ~ "_text"] }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      {% if images %}
+        <section class="section gallery" id="realizace">
+          <div class="section-heading reveal">
+            <p class="eyebrow">{{ s.gallery_eyebrow }}</p>
+            <h2>{{ s.gallery_title }}</h2>
+          </div>
+          <div class="gallery-grid">
+            {% for image in images %}
+              <figure class="gallery-item reveal-scale">
+                <img src="/uploads/{{ image.filename }}" alt="{{ image.title or 'Realizace střechy' }}" loading="lazy" />
+                {% if image.title %}<figcaption>{{ image.title }}</figcaption>{% endif %}
+              </figure>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+
+      {% if news %}
+        <section class="section news-section" id="novinky">
+          <div class="section-heading reveal">
+            <p class="eyebrow">Novinky</p>
+            <h2>Aktuálně ze střech a realizací.</h2>
+          </div>
+          <div class="news-grid">
+            {% for item in news %}
+              <article class="news-card reveal">
+                <time datetime="{{ item.created_at }}">{{ item.created_at|format_dt }}</time>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.body }}</p>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+
+      <section class="section references materials-only">
+        <div class="materials reveal-right">
+          {% if materials_image %}
+            <img
+              class="materials-photo"
+              src="/uploads/{{ materials_image.filename }}"
+              alt="{{ materials_image.title or 'Materiály střech' }}"
+              loading="lazy"
+            />
+          {% endif %}
+          <p class="eyebrow">{{ s.materials_eyebrow }}</p>
+          <h2>{{ s.materials_title }}</h2>
+          <p>{{ s.materials_text }}</p>
+        </div>
+      </section>
+
+      <section class="section contact" id="kontakt">
+        <div class="contact-copy reveal">
+          <p class="eyebrow">{{ s.contact_eyebrow }}</p>
+          <h2>{{ s.contact_title }}</h2>
+          <p>{{ s.contact_text }}</p>
+          <div class="contact-details">
+            <a href="tel:{{ s.contact_phone | replace(' ', '') }}">{{ s.contact_phone }}</a>
+            <a href="mailto:{{ s.contact_email }}">{{ s.contact_email }}</a>
+          </div>
+          <div class="company-card">
+            <h3>{{ s.company_name }}</h3>
+            <p>{{ s.company_ico }}<br />{{ s.company_dic }}</p>
+            <a
+              class="company-address"
+              href="https://www.google.com/maps/search/?api=1&query={{ s.company_address | urlencode }}"
+              target="_blank"
+              rel="noopener"
+            >
+              {{ s.company_address }}
+              <span aria-hidden="true">→ mapa</span>
+            </a>
+          </div>
+        </div>
+        <form class="contact-form reveal" action="/kontakt" method="post" enctype="multipart/form-data">
+          {% for field in form_fields %}
+            <label>
+              {{ field.label }}
+              {% if field.field_type == "textarea" %}
+                <textarea
+                  name="{{ field.field_key }}"
+                  rows="5"
+                  placeholder="{{ field.placeholder }}"
+                  {% if field.is_required %}required{% endif %}
+                ></textarea>
+              {% else %}
+                <input
+                  type="{{ field.field_type }}"
+                  name="{{ field.field_key }}"
+                  placeholder="{{ field.placeholder }}"
+                  {% if field.is_required %}required{% endif %}
+                />
+              {% endif %}
+            </label>
+          {% endfor %}
+          <label>
+            Fotky střechy nebo detailů
+            <input type="file" name="photos" accept=".jpg,.jpeg,.png,.webp" multiple />
+            <span class="form-hint">Můžete přiložit více fotek ve formátu JPG, PNG nebo WEBP. Pomohou nám rychleji odhadnout rozsah prací.</span>
+          </label>
+          <button class="button primary" type="submit">Odeslat poptávku</button>
+          <p class="form-note" role="status" aria-live="polite">{% if success %}Děkujeme, ozveme se co nejdříve.{% endif %}</p>
+        </form>
+      </section>
+    </main>
+
+    {% if popup.is_enabled %}
+      <aside class="site-popup" data-popup>
+        <button class="popup-close" type="button" aria-label="Zavřít popup">×</button>
+        {% if popup_image %}
+          <img
+            class="popup-photo"
+            src="/uploads/{{ popup_image.filename }}"
+            alt="{{ popup_image.title or popup.title }}"
+            loading="lazy"
+          />
+        {% endif %}
+        <p class="eyebrow">Aktuální nabídka</p>
+        <h2>{{ popup.title }}</h2>
+        <p>{{ popup.body }}</p>
+        <a class="button primary" href="{{ popup_cta_url }}">{{ popup.cta_label }}</a>
+      </aside>
+    {% endif %}
+
+    <footer class="footer">
+      <div class="footer-brand">
+        <img class="logo-image small" src="{{ url_for('static', path='img/logo.png') }}" alt="{{ s.brand_name }}" />
+        <p>{{ s.footer_text }}</p>
+      </div>
+      <a href="#top">Nahoru</a>
+    </footer>
+    <script src="{{ url_for('static', path='script.js') }}"></script>
+  </body>
+</html>

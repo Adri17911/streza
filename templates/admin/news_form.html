@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ "Upravit novinku" if item else "Nová novinka" }} | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Novinky</p>
+    <h1>{{ "Upravit novinku" if item else "Nová novinka" }}</h1>
+  </div>
+  <section class="admin-panel">
+    <form class="admin-form" action="{{ '/admin/novinky/' ~ item.id if item else '/admin/novinky' }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>Titulek <input type="text" name="title" value="{{ item.title if item else '' }}" required /></label>
+      <label>Text <textarea name="body" rows="9" required>{{ item.body if item else '' }}</textarea></label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="is_published" {% if not item or item.is_published %}checked{% endif %} />
+        Publikovat na webu
+      </label>
+      <button class="button primary" type="submit">Uložit</button>
+    </form>
+    {% if item %}
+      <form action="/admin/novinky/{{ item.id }}/smazat" method="post" class="danger-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button type="submit">Smazat novinku</button>
+      </form>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Export webu | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Nástroje</p>
+    <h1>Export do statického webu</h1>
+  </div>
+
+  <section class="admin-panel">
+    <h2>Co export obsahuje</h2>
+    <ul class="export-list">
+      <li><code>index.html</code> – aktuální podoba webu se všemi texty, novinkami, galerií i SEO tagy</li>
+      <li><code>static/</code> – styly, skripty a logo</li>
+      <li><code>uploads/</code> – nahrané obrázky ({{ upload_count }} souborů)</li>
+    </ul>
+    <p class="form-hint">
+      Cesty jsou přepsané na relativní, takže balíček funguje po rozbalení na libovolném statickém
+      hostingu i přímo z disku. Poptávkový formulář na statickém webu nemá backend – po odeslání se
+      otevře e-mailový klient s adresou {{ contact_email }}. Popup, animace a Google Analytics
+      fungují beze změny.
+    </p>
+    <form action="/admin/export" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <button class="button primary" type="submit">Stáhnout ZIP</button>
+    </form>
+  </section>
+{% endblock %}

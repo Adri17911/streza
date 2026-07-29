@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Texty webu | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">CMS</p>
+    <h1>Texty webu</h1>
+  </div>
+  {% if request.query_params.get("saved") %}<p class="admin-alert">Texty byly uloženy.</p>{% endif %}
+  <form class="admin-panel admin-form settings-form" action="/admin/texty" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    {% for key, value in settings.items() %}
+      <label>
+        {{ key }}
+        {% if value|length > 90 %}
+          <textarea name="{{ key }}" rows="4">{{ value }}</textarea>
+        {% else %}
+          <input type="text" name="{{ key }}" value="{{ value }}" />
+        {% endif %}
+      </label>
+    {% endfor %}
+    <button class="button primary" type="submit">Uložit texty</button>
+  </form>
+{% endblock %}

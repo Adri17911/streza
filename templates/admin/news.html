@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Novinky | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading row-heading">
+    <div>
+      <p class="eyebrow">Obsah</p>
+      <h1>Novinky</h1>
+    </div>
+    <a class="button primary" href="/admin/novinky/nova">Nová novinka</a>
+  </div>
+  <section class="admin-panel">
+    {% if news %}
+      <div class="admin-table">
+        {% for item in news %}
+          <a class="table-row" href="/admin/novinky/{{ item.id }}">
+            <span>{{ item.title }}</span>
+            <span>{{ "Publikováno" if item.is_published else "Skryto" }}</span>
+            <span>{{ item.created_at|format_dt }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Zatím není vytvořená žádná novinka.</p>
+    {% endif %}
+  </section>
+{% endblock %}

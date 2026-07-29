@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Admin | Streza{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+  </head>
+  <body class="admin-body">
+    <aside class="admin-sidebar">
+      <a class="logo" href="/admin">
+        <img class="logo-image small" src="{{ url_for('static', path='img/logo.png') }}" alt="Streza" />
+        Admin
+      </a>
+      <nav class="admin-nav" aria-label="Administrace">
+        <a href="/admin">Přehled</a>
+        <a href="/admin/poptavky">Poptávky</a>
+        <a href="/admin/leaky">Leak databáze</a>
+        <a href="/admin/texty">Texty webu</a>
+        <a href="/admin/novinky">Novinky</a>
+        <a href="/admin/obrazky">Obrázky</a>
+        <a href="/admin/formular">Formulář</a>
+        <a href="/admin/popup">Popup</a>
+        <a href="/admin/seo">SEO a Analytics</a>
+        <a href="/admin/export">Export webu</a>
+        <a href="/" target="_blank">Zobrazit web</a>
+      </nav>
+      <form action="/admin/logout" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button class="admin-link-button" type="submit">Odhlásit</button>
+      </form>
+    </aside>
+    <main class="admin-main">{% block content %}{% endblock %}</main>
+  </body>
+</html>

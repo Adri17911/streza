@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Popup | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Marketing</p>
+    <h1>Popup na webu</h1>
+  </div>
+  {% if request.query_params.get("saved") %}<p class="admin-alert">Popup byl uložen.</p>{% endif %}
+  <section class="admin-panel">
+    <form class="admin-form" action="/admin/popup" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label class="checkbox-label">
+        <input type="checkbox" name="is_enabled" {% if popup.is_enabled %}checked{% endif %} />
+        Zobrazovat popup na webu
+      </label>
+      <label>Titulek <input type="text" name="title" value="{{ popup.title }}" required /></label>
+      <label>Text <textarea name="body" rows="5" required>{{ popup.body }}</textarea></label>
+      <label>Text tlačítka <input type="text" name="cta_label" value="{{ popup.cta_label }}" required /></label>
+      <label>Odkaz tlačítka <input type="text" name="cta_url" value="{{ popup.cta_url }}" required /></label>
+      <button class="button primary" type="submit">Uložit popup</button>
+    </form>
+  </section>
+{% endblock %}

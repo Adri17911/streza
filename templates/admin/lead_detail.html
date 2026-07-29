@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Poptávka #{{ lead.id }} | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading row-heading">
+    <div>
+      <p class="eyebrow">Poptávka #{{ lead.id }}</p>
+      <h1>{{ lead.name }}</h1>
+    </div>
+    <span class="status-pill large status-{{ lead.status }}">{{ statuses.get(lead.status, lead.status) }}</span>
+  </div>
+
+  {% if lead.follow_up_at and lead.follow_up_at <= now and lead.status not in ["won", "lost"] %}
+    <p class="admin-alert">Follow-up termín {{ lead.follow_up_at|format_dt }} už prošel.</p>
+  {% endif %}
+
+  <section class="admin-panel split-panel">
+    <div>
+      <h2>Detail</h2>
+      <dl class="detail-list">
+        <dt>Vytvořeno</dt>
+        <dd>{{ lead.created_at|format_dt }}</dd>
+        {% for key, value in lead_data.items() %}
+          <dt>{{ field_labels.get(key, key) }}</dt>
+          <dd class="preline">{{ value or "—" }}</dd>
+        {% endfor %}
+      </dl>
+      {% if attachments %}
+        <h3>Přiložené fotky</h3>
+        <div class="attachment-grid">
+          {% for attachment in attachments %}
+            <a href="/admin/poptavky/{{ lead.id }}/prilohy/{{ attachment.id }}" target="_blank" rel="noopener">
+              <img src="/admin/poptavky/{{ lead.id }}/prilohy/{{ attachment.id }}" alt="{{ attachment.original_name or 'Fotka z poptávky' }}" loading="lazy" />
+              <span>{{ attachment.original_name or "Fotka z poptávky" }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <form class="admin-form" action="/admin/poptavky/{{ lead.id }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>
+        Stav
+        <select name="status">
+          {% for status, label in statuses.items() %}
+            <option value="{{ status }}" {% if lead.status == status %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Follow-up termín
+        <input
+          type="datetime-local"
+          name="follow_up_at"
+          value="{{ lead.follow_up_at.strftime('%Y-%m-%dT%H:%M') if lead.follow_up_at else '' }}"
+        />
+      </label>
+      <label>Interní poznámka <textarea name="note" rows="6">{{ lead.note }}</textarea></label>
+      <button class="button primary" type="submit">Uložit</button>
+    </form>
+  </section>
+
+  <section class="admin-panel">
+    <h2>Historie aktivit</h2>
+    <form class="admin-form activity-form" action="/admin/poptavky/{{ lead.id }}/aktivita" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <label>
+        Nová aktivita
+        <textarea name="body" rows="2" placeholder="Volali jsme, domluvená prohlídka v úterý..." required></textarea>
+      </label>
+      <button class="button secondary" type="submit">Přidat aktivitu</button>
+    </form>
+    {% if activities %}
+      <ul class="activity-list">
+        {% for activity in activities %}
+          <li>
+            <time>{{ activity.created_at|format_dt }}</time>
+            <p class="preline">{{ activity.body }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-state">Zatím bez aktivit.</p>
+    {% endif %}
+  </section>
+{% endblock %}

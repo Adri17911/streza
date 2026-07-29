@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+
+{% block title %}SEO a Analytics | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">Marketing</p>
+    <h1>SEO a Analytics</h1>
+  </div>
+
+  {% if request.query_params.get("saved") %}<p class="admin-alert">Nastavení bylo uloženo.</p>{% endif %}
+
+  <form class="admin-panel admin-form" action="/admin/seo" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <h2>Meta tagy</h2>
+    <label>Titulek stránky (title) <input type="text" name="site_title" value="{{ seo.site_title }}" /></label>
+    <label>Meta popis <textarea name="meta_description" rows="3">{{ seo.meta_description }}</textarea></label>
+    <label>Klíčová slova (oddělená čárkou) <input type="text" name="seo_keywords" value="{{ seo.seo_keywords }}" /></label>
+    <label>Robots <input type="text" name="seo_robots" value="{{ seo.seo_robots }}" /></label>
+    <label>Canonical URL (např. https://www.streza.cz) <input type="text" name="seo_canonical_url" value="{{ seo.seo_canonical_url }}" /></label>
+
+    <h2>Sociální sítě (Open Graph)</h2>
+    <label>OG titulek <input type="text" name="seo_og_title" value="{{ seo.seo_og_title }}" /></label>
+    <label>OG popis <textarea name="seo_og_description" rows="3">{{ seo.seo_og_description }}</textarea></label>
+    <label>OG obrázek (URL nebo cesta) <input type="text" name="seo_og_image" value="{{ seo.seo_og_image }}" /></label>
+
+    <h2>Google Analytics</h2>
+    <label>
+      GA4 Measurement ID (např. G-XXXXXXXXXX)
+      <input type="text" name="ga_measurement_id" value="{{ seo.ga_measurement_id }}" placeholder="G-XXXXXXXXXX" />
+    </label>
+    <p class="form-hint">Když je ID vyplněné, měřicí kód gtag.js se automaticky vloží na web. Prázdné pole měření vypne.</p>
+
+    <button class="button primary" type="submit">Uložit nastavení</button>
+  </form>
+{% endblock %}

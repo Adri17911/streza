@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Poptávky | Streza Admin{% endblock %}
+
+{% block content %}
+  <div class="admin-heading">
+    <p class="eyebrow">CRM</p>
+    <h1>Poptávky</h1>
+  </div>
+
+  <section class="admin-panel">
+    <form class="lead-filters" action="/admin/poptavky" method="get">
+      <input
+        type="search"
+        name="q"
+        value="{{ search_query }}"
+        placeholder="Hledat jméno, kontakt, text poptávky..."
+      />
+      {% if active_status %}<input type="hidden" name="stav" value="{{ active_status }}" />{% endif %}
+      <button class="button secondary" type="submit">Hledat</button>
+    </form>
+
+    <div class="status-filters">
+      <a class="status-filter {% if not active_status %}active{% endif %}" href="/admin/poptavky{% if search_query %}?q={{ search_query }}{% endif %}">
+        Vše
+      </a>
+      {% for status, label in statuses.items() %}
+        <a
+          class="status-filter status-{{ status }} {% if active_status == status %}active{% endif %}"
+          href="/admin/poptavky?stav={{ status }}{% if search_query %}&q={{ search_query }}{% endif %}"
+        >
+          {{ label }} ({{ pipeline.get(status, 0) }})
+        </a>
+      {% endfor %}
+    </div>
+
+    {% if leads %}
+      <div class="admin-table">
+        {% for lead in leads %}
+          <a class="table-row" href="/admin/poptavky/{{ lead.id }}">
+            <span>{{ lead.name }}</span>
+            <span>{{ lead.contact }}</span>
+            <span class="status-pill status-{{ lead.status }}">{{ statuses.get(lead.status, lead.status) }}</span>
+            <span>
+              {{ lead.created_at|format_dt }}
+              {% if lead.follow_up_at %}<em class="follow-up-tag">follow-up {{ lead.follow_up_at|format_dt }}</em>{% endif %}
+            </span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Žádná poptávka neodpovídá filtru.</p>
+    {% endif %}
+  </section>
+{% endblock %}
