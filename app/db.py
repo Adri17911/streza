@@ -216,6 +216,9 @@ def init_db() -> None:
                     password_hash=pwd_context.hash(DEFAULT_ADMIN_PASSWORD),
                 )
             )
+        elif os.getenv("ADMIN_PASSWORD"):
+            # Keep Docker/Portainer ADMIN_PASSWORD as the source of truth.
+            admin.password_hash = pwd_context.hash(DEFAULT_ADMIN_PASSWORD)
 
         session.commit()
 

@@ -43,13 +43,19 @@ Vytvořte `.env` podle `.env.example` a nastavte alespoň:
 Copy-Item .env.example .env
 ```
 
-Pak upravte `ADMIN_PASSWORD`, `SECRET_KEY` a podle typu nasazení `COOKIE_SECURE`.
+Pak upravte `ADMIN_PASSWORD` a `SECRET_KEY`.
+
+Pro přístup přes `http://` nech `COOKIE_SECURE=false` (výchozí v Docker compose).
+Pro HTTPS nastav `COOKIE_SECURE=true`.
 
 ```powershell
 docker compose up --build
 ```
 
 Docker publikovaný port je `8443`, kontejner uvnitř dál poslouchá na `8000`.
+Admin login: `http://localhost:8443/admin/login`
+
+`ADMIN_PASSWORD` z env se při startu synchronizuje do databáze.
 
 Perzistentní data:
 

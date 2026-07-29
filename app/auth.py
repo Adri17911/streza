@@ -76,4 +76,4 @@ def login_response(response: Response, username: str) -> None:
 
 
 def logout_response(response: Response) -> None:
-    response.delete_cookie(COOKIE_NAME)
+    response.delete_cookie(COOKIE_NAME, httponly=True, samesite="lax", secure=COOKIE_SECURE)
