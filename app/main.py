@@ -166,7 +166,7 @@ def home(request: Request) -> HTMLResponse:
             "popup": popup,
             "popup_cta_url": _sanitize_public_url(popup.cta_url),
             "images": db.list_images(slot="gallery"),
-            "hero_image": db.get_slot_image("hero"),
+            "hero_images": db.list_images(slot="hero"),
             "materials_image": db.get_slot_image("materials"),
             "popup_image": db.get_slot_image("popup"),
             "form_fields": db.list_form_fields(active_only=True),

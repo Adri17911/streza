@@ -6,8 +6,62 @@ const contactForm = document.querySelector(".contact-form");
 const formNote = document.querySelector(".form-note");
 const popup = document.querySelector("[data-popup]");
 const heroVisual = document.querySelector(".hero-visual");
+const heroCarousel = document.querySelector("[data-hero-carousel]");
 const statValues = document.querySelectorAll(".stats strong");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (heroCarousel) {
+  const slides = [...heroCarousel.querySelectorAll(".hero-carousel-slide")];
+  const dots = [...heroCarousel.querySelectorAll("[data-carousel-dot]")];
+  const prevBtn = heroCarousel.querySelector("[data-carousel-prev]");
+  const nextBtn = heroCarousel.querySelector("[data-carousel-next]");
+  let activeIndex = 0;
+  let timerId = null;
+
+  const showSlide = (index) => {
+    activeIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("is-active", slideIndex === activeIndex);
+    });
+    dots.forEach((dot, dotIndex) => {
+      dot.classList.toggle("is-active", dotIndex === activeIndex);
+    });
+  };
+
+  const stopAutoplay = () => {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  };
+
+  const startAutoplay = () => {
+    if (reducedMotion || slides.length < 2) {
+      return;
+    }
+    stopAutoplay();
+    timerId = setInterval(() => showSlide(activeIndex + 1), 4500);
+  };
+
+  prevBtn?.addEventListener("click", () => {
+    showSlide(activeIndex - 1);
+    startAutoplay();
+  });
+  nextBtn?.addEventListener("click", () => {
+    showSlide(activeIndex + 1);
+    startAutoplay();
+  });
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      showSlide(Number(dot.dataset.carouselDot) || 0);
+      startAutoplay();
+    });
+  });
+
+  heroCarousel.addEventListener("mouseenter", stopAutoplay);
+  heroCarousel.addEventListener("mouseleave", startAutoplay);
+  startAutoplay();
+}
 
 const updateHeader = () => {
   if (header) {

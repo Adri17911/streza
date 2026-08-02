@@ -25,7 +25,7 @@ from .models import (
 
 IMAGE_SLOTS = {
     "gallery": "Galerie Realizace",
-    "hero": "Hlavní vizuál (nahrazuje kreslený domek)",
+    "hero": "Hero carousel (homepage)",
     "materials": "Sekce Materiály",
     "popup": "Popup",
 }

@@ -73,12 +73,36 @@
             <div><strong>{{ s.stat_3_value }}</strong><span>{{ s.stat_3_label }}</span></div>
           </div>
         </div>
-        <div class="hero-visual reveal" {% if not hero_image %}aria-hidden="true"{% endif %}>
-          {% if hero_image %}
-            <figure class="hero-photo">
-              <img src="/uploads/{{ hero_image.filename }}" alt="{{ hero_image.title or 'Realizace střechy' }}" />
-              {% if hero_image.title %}<figcaption>{{ hero_image.title }}</figcaption>{% endif %}
-            </figure>
+        <div class="hero-visual reveal" {% if not hero_images %}aria-hidden="true"{% endif %}>
+          {% if hero_images %}
+            <div class="hero-carousel" data-hero-carousel>
+              <div class="hero-carousel-track">
+                {% for image in hero_images %}
+                  <figure class="hero-photo hero-carousel-slide {% if loop.first %}is-active{% endif %}">
+                    <img
+                      src="/uploads/{{ image.filename }}"
+                      alt="{{ image.title or 'Realizace střechy' }}"
+                      {% if not loop.first %}loading="lazy"{% endif %}
+                    />
+                    {% if image.title %}<figcaption>{{ image.title }}</figcaption>{% endif %}
+                  </figure>
+                {% endfor %}
+              </div>
+              {% if hero_images|length > 1 %}
+                <button class="hero-carousel-btn prev" type="button" data-carousel-prev aria-label="Předchozí foto">‹</button>
+                <button class="hero-carousel-btn next" type="button" data-carousel-next aria-label="Další foto">›</button>
+                <div class="hero-carousel-dots" role="tablist" aria-label="Fotky homepage">
+                  {% for image in hero_images %}
+                    <button
+                      class="hero-carousel-dot {% if loop.first %}is-active{% endif %}"
+                      type="button"
+                      data-carousel-dot="{{ loop.index0 }}"
+                      aria-label="Foto {{ loop.index }}"
+                    ></button>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
           {% else %}
             <div class="sun"></div>
             <div class="roof-card">

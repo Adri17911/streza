@@ -473,6 +473,16 @@ h3 {
   font-weight: 800;
 }
 
+.hero-carousel {
+  position: relative;
+  width: min(480px, 100%);
+}
+
+.hero-carousel-track {
+  position: relative;
+  width: 100%;
+}
+
 .hero-photo {
   position: relative;
   margin: 0;
@@ -482,6 +492,22 @@ h3 {
   overflow: hidden;
   box-shadow: var(--shadow);
   animation: float 5s ease-in-out infinite;
+}
+
+.hero-carousel-slide {
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transition: opacity 420ms ease;
+  animation: none;
+}
+
+.hero-carousel-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
 }
 
 .hero-photo img {
@@ -497,6 +523,59 @@ h3 {
   padding: 16px 22px;
   background: linear-gradient(180deg, transparent, rgba(15, 23, 32, 0.92));
   font-weight: 700;
+}
+
+.hero-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(15, 23, 32, 0.72);
+  color: var(--text);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hero-carousel-btn.prev {
+  left: 12px;
+}
+
+.hero-carousel-btn.next {
+  right: 12px;
+}
+
+.hero-carousel-btn:hover {
+  background: rgba(15, 23, 32, 0.9);
+}
+
+.hero-carousel-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hero-carousel-dot {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  padding: 0;
+}
+
+.hero-carousel-dot.is-active {
+  background: var(--accent-strong);
 }
 
 .materials-photo {
