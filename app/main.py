@@ -57,7 +57,7 @@ async def security_headers(request: Request, call_next):
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.setdefault(
         "Content-Security-Policy",
-        "default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; connect-src 'self' http://89.187.159.11:8100; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+        "default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; script-src 'self' https://www.googletagmanager.com 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
     )
     if auth.IS_PRODUCTION:
         response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
@@ -333,14 +333,6 @@ def admin_lead_attachment(request: Request, lead_id: int, attachment_id: int):
         filename=attachment.original_name or path.name,
         content_disposition_type="inline",
     )
-
-
-@app.get("/admin/leaky", response_class=HTMLResponse)
-def admin_leak_browser(request: Request):
-    guard = require_admin(request)
-    if isinstance(guard, RedirectResponse):
-        return guard
-    return render(request, "admin/leak_browser.html")
 
 
 @app.post("/admin/poptavky/{lead_id}")
