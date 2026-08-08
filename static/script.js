@@ -157,6 +157,21 @@ if (statValues.length && !reducedMotion) {
   statValues.forEach((value) => statsObserver.observe(value));
 }
 
+const photoInput = document.querySelector("[data-photo-input]");
+const photoStatus = document.querySelector("[data-photo-status]");
+
+const updatePhotoStatus = () => {
+  if (!photoInput || !photoStatus) {
+    return;
+  }
+  const count = photoInput.files?.length || 0;
+  photoStatus.textContent = count
+    ? `Vybrané fotky: ${count}`
+    : "";
+};
+
+photoInput?.addEventListener("change", updatePhotoStatus);
+
 // Ve statickém exportu (data-static) se formulář odesílá nativně přes mailto.
 if (contactForm && formNote && !contactForm.hasAttribute("data-static")) {
   contactForm.addEventListener("submit", async (event) => {
@@ -179,6 +194,7 @@ if (contactForm && formNote && !contactForm.hasAttribute("data-static")) {
       const data = await response.json();
       formNote.textContent = data.message;
       contactForm.reset();
+      updatePhotoStatus();
     } catch {
       formNote.textContent = "Poptávku se nepodařilo odeslat. Zkuste to prosím znovu.";
     }

@@ -243,10 +243,17 @@
               {% endif %}
             </label>
           {% endfor %}
-          <label>
+          <label class="photo-upload">
             Fotky střechy nebo detailů
-            <input type="file" name="photos" accept=".jpg,.jpeg,.png,.webp" multiple />
-            <span class="form-hint">Můžete přiložit více fotek ve formátu JPG, PNG nebo WEBP. Pomohou nám rychleji odhadnout rozsah prací.</span>
+            <input
+              type="file"
+              name="photos"
+              accept=".jpg,.jpeg,.png,.webp"
+              multiple
+              data-photo-input
+            />
+            <span class="form-hint">Můžete přiložit až 5 fotek (JPG, PNG, WEBP). Pomohou nám rychleji odhadnout rozsah prací.</span>
+            <span class="photo-upload-status" data-photo-status aria-live="polite"></span>
           </label>
           <button class="button primary" type="submit">Odeslat poptávku</button>
           <p class="form-note" role="status" aria-live="polite">{% if success %}Děkujeme, ozveme se co nejdříve.{% endif %}</p>

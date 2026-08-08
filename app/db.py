@@ -140,22 +140,6 @@ DEFAULT_FORM_FIELDS = [
     {"field_key": "message", "label": "Co potřebujete?", "field_type": "textarea", "placeholder": "Nová střecha, rekonstrukce, oprava...", "is_required": False},
 ]
 
-REQUESTED_SETTING_UPDATES = {
-    "nav_location": DEFAULT_SETTINGS["nav_location"],
-    "hero_eyebrow": DEFAULT_SETTINGS["hero_eyebrow"],
-    "hero_title": DEFAULT_SETTINGS["hero_title"],
-    "service_1_text": DEFAULT_SETTINGS["service_1_text"],
-    "service_3_text": DEFAULT_SETTINGS["service_3_text"],
-    "service_4_text": DEFAULT_SETTINGS["service_4_text"],
-    "process_4_text": DEFAULT_SETTINGS["process_4_text"],
-    "seo_og_description": DEFAULT_SETTINGS["seo_og_description"],
-}
-
-REMOVED_SEEDED_NEWS_TITLES = {
-    "Nově nabízíme pravidelné kontroly střech",
-}
-
-
 def slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
     slug = re.sub(r"[^a-z0-9]+", "-", normalized.lower()).strip("-")
@@ -185,14 +169,10 @@ def init_db() -> None:
     _migrate()
 
     with SessionLocal() as session:
+        # Only seed missing defaults. Never overwrite content edited in admin.
         for key, value in DEFAULT_SETTINGS.items():
             if not session.get(SiteContent, key):
                 session.add(SiteContent(key=key, value=value))
-
-        for key, value in REQUESTED_SETTING_UPDATES.items():
-            item = session.get(SiteContent, key)
-            if item:
-                item.value = value
 
         if not session.get(Popup, 1):
             session.add(
@@ -205,11 +185,6 @@ def init_db() -> None:
                     is_enabled=False,
                 )
             )
-
-        for title in REMOVED_SEEDED_NEWS_TITLES:
-            seeded_news = session.scalar(select(NewsItem).where(NewsItem.title == title))
-            if seeded_news:
-                session.delete(seeded_news)
 
         has_fields = session.scalar(select(FormField.id).limit(1))
         if not has_fields:

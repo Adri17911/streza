@@ -1499,6 +1499,18 @@ h3 {
   margin: 8px 0 0;
 }
 
+.photo-upload input[type="file"] {
+  padding: 12px;
+}
+
+.photo-upload-status {
+  display: block;
+  margin-top: 8px;
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
 .attachment-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

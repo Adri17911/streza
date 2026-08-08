@@ -57,8 +57,14 @@ Admin login: `http://localhost:8443/admin/login`
 
 `ADMIN_PASSWORD` z env se při startu synchronizuje do databáze.
 
-Perzistentní data:
+Perzistentní data (Docker named volumes):
 
-- `data/` obsahuje SQLite databázi.
-- `uploads/` obsahuje veřejné obrázky webu.
-- `private_uploads/` obsahuje neveřejné fotky z poptávek a nesmí se publikovat jako statický obsah.
+- `streza_data` → SQLite databáze (texty, poptávky, novinky, admin účet)
+- `streza_uploads` → veřejné obrázky webu (hero, galerie, …)
+- `streza_private_uploads` → neveřejné fotky z poptávek
+
+Při update/redeploy stacku v Portaineru volumes **nemaž**.
+Obsah upravený v adminu zůstane, protože start už nepřepisuje existující texty.
+
+Fotky v poptávce: na webu v kontaktním formuláři (JPG/PNG/WEBP, max 5).
+V adminu se zobrazí v detailu poptávky.
