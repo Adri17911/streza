@@ -229,6 +229,8 @@ def login_form(request: Request) -> HTMLResponse:
 
 @app.post("/admin/login")
 def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    username = username.strip()
+    password = password.strip()
     if _rate_limited("login", _client_ip(request), LOGIN_RATE_LIMIT):
         return render(request, "admin/login.html", {"error": "Příliš mnoho pokusů. Zkuste to prosím později."})
     if not auth.verify_credentials(username, password):

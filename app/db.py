@@ -42,9 +42,17 @@ LEAD_STATUSES = {
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-DEFAULT_ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
-DEFAULT_ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "streza-admin")
-APP_ENV = os.getenv("APP_ENV", "development").lower()
+def _env_admin_username() -> str:
+    return (os.getenv("ADMIN_USERNAME") or "admin").strip() or "admin"
+
+
+def _env_admin_password() -> str:
+    return (os.getenv("ADMIN_PASSWORD") or "streza-admin").strip() or "streza-admin"
+
+
+DEFAULT_ADMIN_USERNAME = _env_admin_username()
+DEFAULT_ADMIN_PASSWORD = _env_admin_password()
+APP_ENV = (os.getenv("APP_ENV", "development") or "development").strip().lower().split()[0]
 # Development fallback is rejected before startup when APP_ENV=production.
 if APP_ENV in {"prod", "production"} and (
     not os.getenv("ADMIN_PASSWORD") or DEFAULT_ADMIN_PASSWORD == "streza-admin"  # nosec B105
@@ -208,17 +216,19 @@ def init_db() -> None:
             for position, field in enumerate(DEFAULT_FORM_FIELDS, start=1):
                 session.add(FormField(position=position, is_active=True, **field))
 
-        admin = session.scalar(select(AdminUser).where(AdminUser.username == DEFAULT_ADMIN_USERNAME))
+        username = _env_admin_username()
+        password = _env_admin_password()
+        admin = session.scalar(select(AdminUser).where(AdminUser.username == username))
         if not admin:
             session.add(
                 AdminUser(
-                    username=DEFAULT_ADMIN_USERNAME,
-                    password_hash=pwd_context.hash(DEFAULT_ADMIN_PASSWORD),
+                    username=username,
+                    password_hash=pwd_context.hash(password),
                 )
             )
         elif os.getenv("ADMIN_PASSWORD"):
             # Keep Docker/Portainer ADMIN_PASSWORD as the source of truth.
-            admin.password_hash = pwd_context.hash(DEFAULT_ADMIN_PASSWORD)
+            admin.password_hash = pwd_context.hash(password)
 
         session.commit()
 

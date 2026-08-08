@@ -8,16 +8,16 @@ from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from . import db
 
 
-APP_ENV = os.getenv("APP_ENV", "development").lower()
+APP_ENV = (os.getenv("APP_ENV", "development") or "development").strip().lower().split()[0]
 IS_PRODUCTION = APP_ENV in {"prod", "production"}
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = (os.getenv("SECRET_KEY") or "").strip()
 if IS_PRODUCTION and not SECRET_KEY:
     raise RuntimeError("SECRET_KEY must be set when APP_ENV=production.")
 SECRET_KEY = SECRET_KEY or "dev-only-change-this-secret-key"
 COOKIE_NAME = "streza_admin"
 MAX_AGE_SECONDS = 60 * 60 * 8
 CSRF_MAX_AGE_SECONDS = MAX_AGE_SECONDS
-COOKIE_SECURE = os.getenv("COOKIE_SECURE", "true" if IS_PRODUCTION else "false").lower() in {
+COOKIE_SECURE = (os.getenv("COOKIE_SECURE", "true" if IS_PRODUCTION else "false") or "").strip().lower() in {
     "1",
     "true",
     "yes",
@@ -28,7 +28,7 @@ csrf_serializer = URLSafeTimedSerializer(SECRET_KEY, salt="streza-admin-csrf")
 
 
 def verify_credentials(username: str, password: str) -> bool:
-    return db.verify_admin(username, password)
+    return db.verify_admin(username.strip(), password)
 
 
 def create_token(username: str) -> str:
@@ -72,8 +72,15 @@ def login_response(response: Response, username: str) -> None:
         httponly=True,
         samesite="lax",
         secure=COOKIE_SECURE,
+        path="/",
     )
 
 
 def logout_response(response: Response) -> None:
-    response.delete_cookie(COOKIE_NAME, httponly=True, samesite="lax", secure=COOKIE_SECURE)
+    response.delete_cookie(
+        COOKIE_NAME,
+        httponly=True,
+        samesite="lax",
+        secure=COOKIE_SECURE,
+        path="/",
+    )
